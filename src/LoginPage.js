@@ -1,7 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
 
-function Login() {
+
+function LoginPage({updateUserDetails}) {
+    
     const [formData, setFormData]=useState({
         username:"",
         password:""
@@ -40,6 +42,13 @@ function Login() {
         if(validate()){
             if(formData.username==='admin'&&formData.password==='admin'){
                 setMessage('Correct Credentials');
+                //User is authenticated and allowed to navigate
+                //assume we are calling rest endpoint and we are getting additional user details
+                updateUserDetails({
+                    name: 'Arpit',
+                    email:'arpit@b.com'
+                });
+              
             }
             else{
                 setMessage('Invalid Credentials');
@@ -79,4 +88,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginPage;
