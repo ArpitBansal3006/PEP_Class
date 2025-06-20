@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import axios from 'axios';
 
 
 function LoginPage({updateUserDetails}) {
@@ -9,7 +10,7 @@ function LoginPage({updateUserDetails}) {
         password:""
     });
     const [errors, setErrors]=useState({});
-    const [message,setMessage]=useState(null);
+    // const [message,setMessage]=useState(null);
 
     const handleChange=(event)=>{
         const name=event.target.name;
@@ -37,30 +38,44 @@ function LoginPage({updateUserDetails}) {
         return isValid;
     }
 
-    const handleSubmit=(event)=>{
+    const handleSubmit=async(event)=>{
         event.preventDefault();
         if(validate()){
-            if(formData.username==='admin'&&formData.password==='admin'){
-                setMessage('Correct Credentials');
-                //User is authenticated and allowed to navigate
-                //assume we are calling rest endpoint and we are getting additional user details
-                updateUserDetails({
-                    name: 'Arpit',
-                    email:'arpit@b.com'
-                });
+            // if(formData.username==='admin'&&formData.password==='admin'){
+            //     setMessage('Correct Credentials');
+            //     //User is authenticated and allowed to navigate
+            //     //assume we are calling rest endpoint and we are getting additional user details
+            //     updateUserDetails({
+            //         name: 'Arpit',
+            //         email:'arpit@b.com'
+            //     });
               
-            }
-            else{
-                setMessage('Invalid Credentials');
+            // }
+            // else{
+            //     setMessage('Invalid Credentials');
+            // }
+            const body={
+                username:formData.username,
+                password:formData.password
+            };
+            const configuration={
+                withCredentials: true
+            };
+            try{
+            const response=await axios.post('http://localhost:8001/auth/login',body,configuration);
+            updateUserDetails(response.data.userDetails);
+            }catch(error){
+                setErrors({message:'Something went wrong.Please try again.'});
             }
         }
     };
   return (
     <div className="container text-center">
       <h1>Welcome to Login Page</h1>
-      {message &&(
-        message
-      )}
+      {/* {message &&( */}
+        {/* message */}
+      {/* )} */}
+      {errors.message&&(errors.message)}
       <form onSubmit={handleSubmit}>
         <div>
             <label>Username:</label>

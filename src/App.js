@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Route,Routes,Navigate} from "react-router-dom";
 import Home from "./Home";
 import LoginPage from './LoginPage';
 import AppLayout from './layout/AppLayout';
 import Dashboard from './pages/Dashboard';
-
+import axios from 'axios';
 
 // function App() {
 //   return (
@@ -13,7 +13,6 @@ import Dashboard from './pages/Dashboard';
 //     </div>
 //   );
 // }
-
 // export default App;
 
 function App() {
@@ -24,8 +23,27 @@ function App() {
 //this function takes new value of userdetails and update it using setUserCredentials function
   const updateUserDetails=(updatedData)=>{
     setUserDetails(updatedData);
+  };
+
+  const isUserLoggedIn=async()=>{
+    
+    try{
+        const response=await axios.post('http://localhost:8001/auth/is-user-logged-in',{},{
+          withCredentials:true
+        });
+        updateUserDetails(response.data.userDetails);
+
+            }catch(error){
+               console.log('User not logged in',error); 
+            }
 
   };
+  useEffect(()=>{
+    isUserLoggedIn();
+  },[]);
+  
+
+  
   return (
     <Routes>
       <Route path="/" element={userDetails ?
